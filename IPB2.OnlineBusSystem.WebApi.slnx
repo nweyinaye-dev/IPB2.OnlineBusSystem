@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="IPB2.OnlineBusSystem.ConsoleApp/IPB2.OnlineBusSystem.ConsoleApp.csproj" Id="3f404784-87ef-4418-a3d0-c0291c61f2c1" />
+  <Project Path="IPB2.OnlineBusSystem.Database/IPB2.OnlineBusSystem.DataBase.csproj" />
+  <Project Path="IPB2.OnlineBusSystem.WebApi/IPB2.OnlineBusSystem.WebApi.csproj" />
+</Solution>
