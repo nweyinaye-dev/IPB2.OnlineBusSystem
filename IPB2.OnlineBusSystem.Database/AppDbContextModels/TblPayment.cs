@@ -17,7 +17,7 @@ public partial class TblPayment
 
     public decimal TotalAmount { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateOnly PaymentDate { get; set; }
 
     public bool IsDelete { get; set; }
 }

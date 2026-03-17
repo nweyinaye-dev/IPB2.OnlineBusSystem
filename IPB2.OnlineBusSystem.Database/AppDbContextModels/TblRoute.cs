@@ -7,6 +7,8 @@ public partial class TblRoute
 {
     public string Id { get; set; } = null!;
 
+    public string RouteName { get; set; } = null!;
+
     public string Origin { get; set; } = null!;
 
     public string Destination { get; set; } = null!;

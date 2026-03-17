@@ -1,6 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
+namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail;
 
 public class UpsertRouteRequest
 {
@@ -11,7 +15,7 @@ public class UpsertRouteRequest
 public class UpdateRouteRequest
 {
     public string? RouteName { get; set; } = null!;
-    public string? Origin { get; set; } 
+    public string? Origin { get; set; }
     public string? Destination { get; set; }
 }
 public class RouteResponse
@@ -36,3 +40,4 @@ public class GetRoutesResponse
     public int PageSize { get; set; }
     public int TotalPages { get; set; }
 }
+

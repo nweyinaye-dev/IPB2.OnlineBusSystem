@@ -8,10 +8,13 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
     public class BusService
     {
         AppDbContext _db = new AppDbContext();
-        public async Task<GetBusResponse> GetBusAsync()
+        public async Task<GetBusResponse> GetBusAsync(int pageNo, int pageSize)
         {
             var Bus = await _db.TblBusDetails
                 .Where(x => !x.IsDelete)
+                .OrderByDescending(x => x.BusName)
+                .Skip((pageNo - 1) * pageSize)
+                .Take(pageSize)
                 .Select(x => new BusResponse
                 {
                     Id = x.Id,
@@ -21,10 +24,8 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
                     TotalSeat = x.TotalSeat
                 })
                 .ToListAsync();
-
             return new GetBusResponse { Buss = Bus };
         }
-
         public async Task<BusResponse?> GetBusByIdAsync(string id)
         {
             var Bus = await _db.TblBusDetails
@@ -42,8 +43,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
 
             return Bus;
         }
-
-        public async Task<ServiceResponse> CreateAsync(CreateBusRequest request)
+        public async Task<ServiceResponse> CreateAsync(UpsertBusRequest request)
         {
             var Bus = new TblBusDetail
             {
@@ -56,15 +56,12 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
             };
 
             _db.TblBusDetails.Add(Bus);
-            await _db.SaveChangesAsync();
+            int rowAffected = await _db.SaveChangesAsync();
 
-            return new ServiceResponse
-            {
-                Status = Common.ResponseType.Success,
-                Message = "Bus created successfully."
-            };
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Bus created successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
         }
-
         public async Task<ServiceResponse> UpsertAsync(UpsertBusRequest request, string id)
         {
             var Bus = await _db.TblBusDetails
@@ -85,13 +82,12 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
             Bus.BusType = request.BusType;
             Bus.TotalSeat = request.TotalSeat;
 
-            await _db.SaveChangesAsync();
+            int rowAffected = await _db.SaveChangesAsync();
 
-            return new ServiceResponse
-            {
-                Status = Common.ResponseType.Success,
-                Message = "Bus updated successfully."
-            };
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Bus updated successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
+
         }
         public async Task<ServiceResponse> UpdateAsync(UpdateBusRequest request, string id)
         {
@@ -107,34 +103,17 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
                     Message = "Bus not found."
                 };
             }
-            if (!string.IsNullOrEmpty(request.BusNo))
-            {
+            if (!string.IsNullOrEmpty(request.BusNo))  Bus.BusNo = request.BusNo;
+            if (!string.IsNullOrEmpty(request.BusName)) Bus.BusName = request.BusName;
+            if (!string.IsNullOrEmpty(request.BusType)) Bus.BusType = request.BusType;
+            if (request.TotalSeat >= 20) Bus.TotalSeat = request.TotalSeat;
 
-                Bus.BusNo = request.BusNo;
-            }
-            if (!string.IsNullOrEmpty(request.BusName))
-            {
+            int rowAffected = await _db.SaveChangesAsync();
 
-                Bus.BusName = request.BusName;
-            }
-            if (!string.IsNullOrEmpty(request.BusType))
-            {
-
-                Bus.BusType = request.BusType;
-            }
-            if (request.TotalSeat != 0)
-            {
-                Bus.TotalSeat = request.TotalSeat;
-            }
-            await _db.SaveChangesAsync();
-
-            return new ServiceResponse
-            {
-                Status = Common.ResponseType.Success,
-                Message = "Bus updated successfully."
-            };
-        }
-
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Bus updated successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
+         }
         public async Task<ServiceResponse> DeleteAsync(string id)
         {
             var Bus = await _db.TblBusDetails
@@ -151,13 +130,12 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
             }
 
             Bus.IsDelete = true;
-            await _db.SaveChangesAsync();
+            int rowAffected = await _db.SaveChangesAsync();
 
-            return new ServiceResponse
-            {
-                Status = Common.ResponseType.Success,
-                Message = "Bus deleted successfully."
-            };
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Bus deleted successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
+
         }
     }
 }

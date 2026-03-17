@@ -9,10 +9,13 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
     public class ScheduleService
     {
         AppDbContext _db = new AppDbContext();
-        public async Task<GetScheduleResponse> GetScheduleAsync()
+        public async Task<GetScheduleResponse> GetScheduleAsync(int pageNo, int pageSize)
         {
             var Schedule = await _db.TblSchedules
                 .Where(x => !x.IsDelete)
+                .OrderByDescending(x => x.Date)
+                .Skip((pageNo - 1) * pageSize)
+                 .Take(pageSize)
                 .Select(x => new ScheduleResponse
                 {
                     Id = x.Id,
@@ -52,8 +55,19 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
             return Schedule;
         }
 
-        public async Task<ServiceResponse> CreateAsync(CreateScheduleRequest request)
+        public async Task<ServiceResponse> CreateAsync(UpsertScheduleRequest request)
         {
+
+            var item = await _db.TblBusDetails.FirstOrDefaultAsync(x => x.Id == request.BusId && !x.IsDelete);
+            if (item is null) return new ServiceResponse { Status = ResponseType.NotFound, Message = "Bus id not found." };
+
+            var isRouteExist = await _db.TblRoutes.Where(x => !x.IsDelete)
+                .AnyAsync(x => x.Id == request.RouteId);
+
+            if (!isRouteExist)
+                return new ServiceResponse { Status = ResponseType.NotFound, Message = "Route id not found." };
+
+
             var Schedule = new TblSchedule
             {
                 Id = Guid.NewGuid().ToString(),
@@ -63,19 +77,17 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
                 ArrivalTime = request.ArrivalTime,
                 DepartureTime = request.DepartureTime,
                 RouteId = request.RouteId,
-                AvaliableSeat = 30,
+                AvaliableSeat = item.TotalSeat,
                 BookSeat = 0,
                 IsDelete = false
             };
 
             _db.TblSchedules.Add(Schedule);
-            await _db.SaveChangesAsync();
+            int rowAffected = await _db.SaveChangesAsync();
 
-            return new ServiceResponse
-            {
-                Status = ResponseType.Success,
-                Message = "Schedule created successfully."
-            };
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Schedule created successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
         }
 
         public async Task<ServiceResponse> UpsertAsync(UpsertScheduleRequest request, string id)
@@ -92,34 +104,27 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
                     Message = "Schedule not found."
                 };
             }
-            if (!string.IsNullOrEmpty(request.BusId))
-            {
-                var isBusExist = await _db.TblBusDetails.AnyAsync(x => x.Id == request.BusId);
 
-                if (!isBusExist)
-                    return new ServiceResponse { Status = ResponseType.NotFound, Message = "Bus id not found." };                
-            }
-            if (!string.IsNullOrEmpty(request.RouteId))
-            {
-                var isRouteExist = await _db.TblRoutes.AnyAsync(x => x.Id == request.RouteId);
+            var item = await _db.TblBusDetails.FirstOrDefaultAsync(x => x.Id == request.BusId && !x.IsDelete);
+            if (item is null) return new ServiceResponse { Status = ResponseType.NotFound, Message = "Bus id not found." };
 
-                if (!isRouteExist)
-                    return new ServiceResponse { Status = ResponseType.NotFound, Message = "Route id not found." };
-               
-            }
+            var isRouteExist = await _db.TblRoutes.Where(x => !x.IsDelete)
+                .AnyAsync(x => x.Id == request.RouteId);
+
+            if (!isRouteExist)
+                return new ServiceResponse { Status = ResponseType.NotFound, Message = "Route id not found." };
+
             Schedule.BusId = request.BusId;
             Schedule.RouteId = request.RouteId;
             Schedule.ArrivalTime = request.ArrivalTime;
             Schedule.DepartureTime = request.DepartureTime;
             Schedule.Date = request.Date;
 
-            await _db.SaveChangesAsync();
+            int rowAffected = await _db.SaveChangesAsync();
 
-            return new ServiceResponse
-            {
-                Status = ResponseType.Success,
-                Message = "Schedule updated successfully."
-            };
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Schedule updated successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
         }
         public async Task<ServiceResponse> UpdateAsync(UpdateScheduleRequest request, string id)
         {
@@ -139,28 +144,36 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
 
             if (!string.IsNullOrEmpty(request.BusId))
             {
-                var isBusExist = await _db.TblBusDetails.AnyAsync(x => x.Id == request.BusId);
+                var item = await _db.TblBusDetails.FirstOrDefaultAsync(x => x.Id == request.BusId && !x.IsDelete);
+                if (item is null) return new ServiceResponse { Status = ResponseType.NotFound, Message = "Bus id not found." };
 
-                if (!isBusExist)
-                    return new ServiceResponse { Status = ResponseType.NotFound, Message = "Bus id not found." };
                 Schedule.BusId = request.BusId;
+                Schedule.AvaliableSeat = item.TotalSeat;
             }
             if (!string.IsNullOrEmpty(request.RouteId))
             {
-                var isRouteExist = await _db.TblRoutes.AnyAsync(x => x.Id == request.RouteId);
+                var isRouteExist = await _db.TblRoutes.Where(x => !x.IsDelete)
+                 .AnyAsync(x => x.Id == request.RouteId);
 
                 if (!isRouteExist)
                     return new ServiceResponse { Status = ResponseType.NotFound, Message = "Route id not found." };
+
                 Schedule.RouteId = request.RouteId;
             }
+            if (request.Fare > 0)
+                Schedule.Fare = request.Fare;
 
-            await _db.SaveChangesAsync();
+            if (!string.IsNullOrEmpty(request.ArrivalTime))
+                Schedule.ArrivalTime = request.ArrivalTime;
 
-            return new ServiceResponse
-            {
-                Status = ResponseType.Success,
-                Message = "Schedule updated successfully."
-            };
+            if (!string.IsNullOrEmpty(request.DepartureTime))
+                Schedule.DepartureTime = request.DepartureTime;
+
+            int rowAffected = await _db.SaveChangesAsync();
+
+            return rowAffected > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Schedule updated successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
         }
 
         public async Task<ServiceResponse> DeleteAsync(string id)

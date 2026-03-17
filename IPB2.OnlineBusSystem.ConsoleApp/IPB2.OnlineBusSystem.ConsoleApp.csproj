@@ -8,9 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Admin\Bus\" />
-    <Folder Include="Features\Admin\Schdeule\" />
-    <Folder Include="Features\Admin\RouteDetail\" />
+    <ProjectReference Include="..\IPB2.OnlineBusSystem.Database\IPB2.OnlineBusSystem.DataBase.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.Bus;
+using IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail;
+using IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.Schdeule;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,49 +48,15 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin
 
         private void RouteMenu()
         {
-            Console.WriteLine("\n*** Route Menu ***");
-            Console.WriteLine("1) Route Listing");
-            Console.WriteLine("2) Create Route");
-            Console.WriteLine("3) Update Route");
-            Console.WriteLine("4) Delete Route");
-            Console.Write("Please choose option: ");
-            var choose = Console.ReadLine();
-            bool isFlag = int.TryParse(choose, out int res);
-            switch (res)
-            {
-                case 1: RouteMenu(); break;
-                case 2: BusMenu(); break;
-                case 3: SchdeuleMenu(); break;
-                case 4:
-                    {
-                        Console.WriteLine("Thanks for using.");
-                        //Exit();
-                        break;
-                    }
-                default: Console.WriteLine("Invalid option.Please try again."); break;
-            }
+             new RouteUI().Start();
         }
         private void BusMenu()
         {
-            Console.WriteLine("\n*** Bus Menu ***");
-            Console.WriteLine("1) Bus Listing");
-            Console.WriteLine("2) Create Bus");
-            Console.WriteLine("3) Update Bus");
-            Console.WriteLine("4) Delete Bus");
-            Console.Write("Please choose option: ");
-            var choose = Console.ReadLine();
-            bool isFlag = int.TryParse(choose, out int res);
+            new BusUI().Start();
         }
         private void SchdeuleMenu()
         {
-            Console.WriteLine("\n*** Schedule Menu ***");
-            Console.WriteLine("1) Schedule Listing");
-            Console.WriteLine("2) Create Schedule");
-            Console.WriteLine("3) Update Schedule");
-            Console.WriteLine("4) Delete Schedule");
-            Console.Write("Please choose option: ");
-            var choose = Console.ReadLine();
-            bool isFlag = int.TryParse(choose, out int res);
+            new ScheduleUI().Start();
         }
     }
 }

@@ -1,10 +1,3 @@
-public class CreateBusRequest
-{
-    public string BusNo { get; set; } = null!;
-    public string BusName { get; set; } = null!;
-    public string BusType { get; set; } = null!;
-    public int TotalSeat { get; set; }
-}
 
 public class UpsertBusRequest
 {

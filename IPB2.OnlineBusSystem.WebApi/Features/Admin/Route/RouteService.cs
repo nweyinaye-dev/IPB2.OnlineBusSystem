@@ -7,13 +7,17 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
 public class RouteService
 {
     AppDbContext _db = new AppDbContext();
-    public  async Task<GetRoutesResponse> GetRoutesAsync()
+    public  async Task<GetRoutesResponse> GetRoutesAsync(int pageNo, int pageSize)
     {
-        var routes = await _db.TblRoutes
+        var routes = await _db.TblRoutes             
             .Where(x => !x.IsDelete)
+            .OrderByDescending(x => x.RouteName)
+            .Skip((pageNo - 1) * pageSize)
+             .Take(pageSize)
             .Select(x => new RouteResponse
             {
                 Id = x.Id,
+                RouteName = x.RouteName,
                 Origin = x.Origin,
                 Destination = x.Destination
             })
@@ -29,6 +33,7 @@ public class RouteService
             .Select(x => new RouteResponse
             {
                 Id = x.Id,
+                RouteName = x.RouteName,
                 Origin = x.Origin,
                 Destination = x.Destination
             })
@@ -37,24 +42,23 @@ public class RouteService
         return route;
     }
 
-    public  async Task<ServiceResponse> CreateAsync(CreateRouteRequest request)
+    public  async Task<ServiceResponse> CreateAsync(UpsertRouteRequest request)
     {
         var route = new TblRoute
         {
             Id = Guid.NewGuid().ToString(),
+            RouteName = request.RouteName,
             Origin = request.Origin,
             Destination = request.Destination,
             IsDelete = false
         };
 
         _db.TblRoutes.Add(route);
-        await _db.SaveChangesAsync();
+        int rowAffected = await _db.SaveChangesAsync();
 
-        return new ServiceResponse
-        {
-            Status = Common.ResponseType.Success,
-            Message = "Route created successfully."
-        };
+        return rowAffected > 0
+            ? new ServiceResponse { Status = ResponseType.Success, Message = "Route created successfully." }
+            : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
     }
 
     public  async Task<ServiceResponse> UpsertAsync(UpsertRouteRequest request,string id)
@@ -71,17 +75,15 @@ public class RouteService
                 Message = "Route not found."
             };
         }
-
+        route.RouteName = request.RouteName;
         route.Origin = request.Origin;
         route.Destination = request.Destination;
 
-        await _db.SaveChangesAsync();
+        int rowAffected = await _db.SaveChangesAsync();
 
-        return new ServiceResponse
-        {
-            Status = Common.ResponseType.Success,
-            Message = "Route updated successfully."
-        };
+        return rowAffected > 0
+           ? new ServiceResponse { Status = ResponseType.Success, Message = "Route updated successfully." }
+           : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
     }
     public async Task<ServiceResponse> UpdateAsync(UpdateRouteRequest request, string id)
     {
@@ -97,24 +99,24 @@ public class RouteService
                 Message = "Route not found."
             };
         }
-        if (!string.IsNullOrEmpty(request.Origin))
-        {
+        if (!string.IsNullOrEmpty(request.RouteName)) {
+
+            route.RouteName = request.RouteName;
+        }
+        if (!string.IsNullOrEmpty(request.Origin))  {
 
             route.Origin = request.Origin;
         }
         if (!string.IsNullOrEmpty(request.Destination))
         {
-
             route.Destination = request.Destination;
         }
 
-        await _db.SaveChangesAsync();
+        int rowAffected = await _db.SaveChangesAsync();
 
-        return new ServiceResponse
-        {
-            Status = Common.ResponseType.Success,
-            Message = "Route updated successfully."
-        };
+        return rowAffected > 0
+           ? new ServiceResponse { Status = ResponseType.Success, Message = "Route updated successfully." }
+           : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
     }
 
     public  async Task<ServiceResponse> DeleteAsync(string id)
@@ -133,12 +135,10 @@ public class RouteService
         }
 
         route.IsDelete = true;
-        await _db.SaveChangesAsync();
+        int rowAffected = await _db.SaveChangesAsync();
 
-        return new ServiceResponse
-        {
-            Status = Common.ResponseType.Success,
-            Message = "Route deleted successfully."
-        };
+        return rowAffected > 0
+           ? new ServiceResponse { Status = ResponseType.Success, Message = "Route updated successfully." }
+           : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
     }
 }
