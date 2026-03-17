@@ -12,8 +12,8 @@ public class RouteService
         var routes = await _db.TblRoutes             
             .Where(x => !x.IsDelete)
             .OrderByDescending(x => x.RouteName)
-            .Skip((pageNo - 1) * pageSize)
-             .Take(pageSize)
+            //.Skip((pageNo - 1) * pageSize)
+            // .Take(pageSize)
             .Select(x => new RouteResponse
             {
                 Id = x.Id,

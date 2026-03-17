@@ -13,7 +13,7 @@ public class UpsertScheduleRequest
 public class UpdateScheduleRequest
 {
     public string? BusId { get; set; } = null!;
-    public DateOnly Date { get; set; }
+    public DateOnly? Date { get; set; }
     public int Fare { get; set; }
     public string? ArrivalTime { get; set; } = null!;
     public string? DepartureTime { get; set; } = null!;
