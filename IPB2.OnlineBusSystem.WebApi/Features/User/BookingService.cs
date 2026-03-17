@@ -84,7 +84,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
             foreach (var p in request.Passengers)
             {
                 if (p.SeatNo > totalSeats)
-                    return new ServiceResponse { Status = ResponseType.None, Message = "Invalid SeatNo." };
+                    return new ServiceResponse { Status = ResponseType.None, Message = $"Invalid SeatNo : {p.SeatNo}." };
 
                 var booking = new TblBook
                     {
