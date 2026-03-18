@@ -3,6 +3,7 @@ using IPB2.OnlineBusSystem.WebApi.Common;
 using IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus;
 using IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
 using IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule;
+using IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin.Schedule;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -327,10 +328,13 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             await BindScheduleGrid(1, 10);
         }
 
-        private void btnSchCreate_Click(object sender, EventArgs e)
+        private async void btnSchCreate_Click(object sender, EventArgs e)
         {
-            // Placeholder for Create Schedule
-            MessageBox.Show("Create Schedule functionality coming soon.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var createForm = new ScheduleNewForm();
+            if (createForm.ShowDialog() == DialogResult.OK)
+            {
+                await BindScheduleGrid(1, 10);
+            }
         }
 
         private void btnSchUpdate_Click(object sender, EventArgs e)

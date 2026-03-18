@@ -436,7 +436,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 537);
+            ClientSize = new Size(789, 537);
             Controls.Add(Bus);
             Name = "Admin";
             StartPosition = FormStartPosition.CenterScreen;
@@ -496,5 +496,6 @@
         private ColumnHeader Route;
         private ColumnHeader AvaliableSeat;
         private ColumnHeader BookedSeat;
+        private ListBox listBox1;
     }
 }
