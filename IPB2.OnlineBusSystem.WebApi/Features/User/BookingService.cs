@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
 using IPB2.OnlineBusSystem.WebApi.Common;
-using IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Featues\Admin\Schedule\" />
+    <Folder Include="Featues\User\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IPB2.OnlineBusSystem.WebApi\IPB2.OnlineBusSystem.WebApi.csproj" />
+  </ItemGroup>
+
+</Project>

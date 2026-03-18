@@ -145,7 +145,7 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
             int rowAffected = await _db.SaveChangesAsync();
 
             return rowAffected > 0
-               ? new ServiceResponse { Status = ResponseType.Success, Message = "Route updated successfully." }
+               ? new ServiceResponse { Status = ResponseType.Success, Message = "Route deleted successfully." }
                : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
         }
     }
