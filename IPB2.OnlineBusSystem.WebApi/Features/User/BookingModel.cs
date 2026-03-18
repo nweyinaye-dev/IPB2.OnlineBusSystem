@@ -14,7 +14,7 @@ public class SearchBusResponseModel
     public string BusName { get; set; } = null!;
     public string DepartureTime { get; set; } = null!;
     public string ArrivalTime { get; set; } = null!;
-    public int AvailableSeats { get; set; }
+    public int AvaliableSeat { get; set; }
     public int Fare { get; set; }
 }
 public class SearchBusResponse

@@ -26,5 +26,7 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.Bus
             var choose = Console.ReadLine();
             bool isFlag = int.TryParse(choose, out int res);
         }
+
+
     }
 }

@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Azure.Core;
+using IPB2.OnlineBusSystem.ConsoleApp.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
@@ -9,9 +12,9 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
     public class RouteUI
     {
         RouteService _routeService = new RouteService();
-        public void Start()
+        public async Task Start() // Change void to async Task
         {
-             ShowMainMenu();
+            await ShowMainMenu(); // Await this call
         }
         public async Task ShowMainMenu()
         {
@@ -36,9 +39,9 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
                 switch (res)
                 {
                     case 1:
-                        await GetRoutesAsync();
-                        break;
-
+                        await HandleListing();break;
+                    case 2:
+                        await HandleCreate(); break;
                     case 4:
                         Console.WriteLine("Thanks for using.");
                         return;
@@ -50,41 +53,17 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
             }
         }
 
-        private async Task GetRoutesAsync()
+        private async Task HandleListing()
         {
-            int pageNo = 1;
-            int pageSize = 10;
-
-            while (true)
-            {
-                Console.Write("Enter pageNo: ");
-                var flag = int.TryParse(Console.ReadLine(), out int pageno);
-                if (flag)
-                {
-                    pageNo = pageno;
-                    break;
-                }
-                Console.WriteLine("Invalid PageNo. Please try again.");
-            }
-
-            while (true)
-            {
-                Console.Write("Enter pageSize: ");
-                var flag = int.TryParse(Console.ReadLine(), out int pagesize);
-                if (flag)
-                {
-                    pageSize = pagesize;
-                    break;
-                }
-                Console.WriteLine("Invalid pageSize. Please try again.");
-            }
+            Console.WriteLine("\n*** Route Listing ***");
+            int pageNo = ReadInt("Enter pageNo: ");
+            int pageSize = ReadInt("Enter pageSize: ");
+            Console.WriteLine();
 
             var list = await _routeService.GetRoutesAsync(pageNo, pageSize);
 
-            if (list.Routes.Count == 0)
-            {
+            if (!list.Routes.Any())
                 Console.WriteLine("No routes found.");
-            }
             else
             {
                 foreach (var route in list.Routes)
@@ -92,13 +71,63 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
                     Console.WriteLine($"Id: {route.Id}");
                     Console.WriteLine($"Route Name: {route.RouteName}");
                     Console.WriteLine($"Origin: {route.Origin}");
-                    Console.WriteLine($"Destination: {route.Destination}");
-                    Console.WriteLine("-----------------------------------");
+                    Console.WriteLine($"Destination: {route.Destination}\n---");
                 }
             }
-
-            Console.WriteLine("\nPress any key to return to menu...");
-            Console.ReadKey();
+                
         }
+
+        private async Task HandleCreate()
+        {
+            Console.WriteLine("\n*** Route Create ***");
+            var request = new UpsertRouteRequest
+            {
+                RouteName = ReadString("Enter Route Name: "),
+                Origin = ReadString("Enter Origin: "),
+                Destination = ReadString("Enter Destination: ")
+            };
+
+            var validation = Validation(request);
+            if (!validation.IsSuccess)
+            {
+                Console.WriteLine($"Validation Error: {validation.Message}");
+                return;
+            }
+
+            var response = await _routeService.CreateAsync(request);
+            Console.WriteLine(response.ToString()) ;
+        }
+        
+        private int ReadInt(string prompt)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                if (int.TryParse(Console.ReadLine(), out int result)) return result;
+                Console.WriteLine("Invalid number.");
+            }
+        }
+
+        private string ReadString(string prompt)
+        {
+            Console.Write(prompt);
+            return Console.ReadLine()?.Trim() ?? string.Empty;
+        }
+
+        private ResponseBaseModel Validation(UpsertRouteRequest request)
+        {
+            // Require Validation
+            if (string.IsNullOrWhiteSpace(request.RouteName))
+                return new ResponseBaseModel { IsSuccess = false, Message = "Route name is required." };
+            if (string.IsNullOrWhiteSpace(request.Origin))
+                return new ResponseBaseModel { IsSuccess = false, Message = "Origin no is required." };
+            if (string.IsNullOrWhiteSpace(request.Destination))
+                return new ResponseBaseModel { IsSuccess = false, Message = "Destination is required." };
+
+            return new ResponseBaseModel { IsSuccess = true, Message = "Validatin successfully." };
+
+        }
+
+
     }
 }

@@ -13,15 +13,15 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin
     {
         //private AccountService accountService = new AccountService();
         //private string? _loginMobileNo;
-        public void Start()
+        public async Task Start()
         {
             while (true)
             {
-                ShowMainMenu();
+               await ShowMainMenu();
             }
         }
 
-        public void ShowMainMenu()
+        public async Task ShowMainMenu()
         {
             Console.WriteLine("\n*** Welcome to Online Bus System ***");
             Console.WriteLine("1) Route");
@@ -32,23 +32,23 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin
             bool isFlag = int.TryParse(choose, out int res);
             switch (res)
             {
-                case 1: RouteMenu(); break;
-                case 2: BusMenu(); break;
-                case 3: SchdeuleMenu(); break;
-                case 4:
-                    {
-                        Console.WriteLine("Thanks for using.");
-                        //Exit();
-                        break;
-                    }
-                default: Console.WriteLine("Invalid option.Please try again."); break;
+                case 1: await RouteMenu(); break;
+                //case 2: BusMenu(); break;
+                //case 3: SchdeuleMenu(); break;
+                //case 4:
+                //    {
+                //        Console.WriteLine("Thanks for using.");
+                //        //Exit();
+                //        break;
+                //    }
+                //default: Console.WriteLine("Invalid option.Please try again."); break;
             }
 
         }
 
-        private void RouteMenu()
+        private async Task RouteMenu()
         {
-             new RouteUI().Start();
+            await new RouteUI().Start();
         }
         private void BusMenu()
         {

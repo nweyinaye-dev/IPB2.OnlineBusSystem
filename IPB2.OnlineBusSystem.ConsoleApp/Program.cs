@@ -1,3 +1,3 @@
 ﻿using IPB2.OnlineBusSystem.ConsoleApp.Features.Admin;
 
-new AdminUI().Start();
+await new AdminUI().Start();

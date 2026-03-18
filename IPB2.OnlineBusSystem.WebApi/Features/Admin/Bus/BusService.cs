@@ -13,8 +13,8 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
             var Bus = await _db.TblBusDetails
                 .Where(x => !x.IsDelete)
                 .OrderByDescending(x => x.BusName)
-                //.Skip((pageNo - 1) * pageSize)
-                //.Take(pageSize)
+                .Skip((pageNo - 1) * pageSize)
+                .Take(pageSize)
                 .Select(x => new BusResponse
                 {
                     Id = x.Id,

@@ -17,7 +17,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
             DataSource = ".",
             InitialCatalog = "IPB2_OnlineBusBooking",
             UserID = "sa",
-            Password = "system",
+            Password = "sasa@123",
             TrustServerCertificate = true,
         };
 
@@ -27,7 +27,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
             {
                 db.Open();
 
-                var sql = $@"SELECT s.id,b.BusNo,b.BusName,s.DepartureTime,s.ArrivalTime,s.AvaliableSeat,s.Fare
+                var sql = $@"SELECT s.id as secheduleId,b.BusNo,b.BusName,s.DepartureTime,s.ArrivalTime,s.AvaliableSeat,s.Fare
                         FROM [dbo].[Tbl_Schedule] s
                         INNER JOIN [dbo].[Tbl_Route] r ON s.RouteId = r.ID
                         INNER JOIN [dbo].[Tbl_BusDetail] b ON s.BusId = b.ID
@@ -35,6 +35,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
                             s.IsDelete = 0 
                             AND r.IsDelete = 0
                             AND b.IsDelete = 0
+                            AND s.AvaliableSeat > 0
                             AND s.Date = '{request.TravelDate}'
                             AND r.Origin = '{request.Origin}'
                             AND r.Destination = '{request.Destination}'";
@@ -46,68 +47,52 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
 
         public async Task<ServiceResponse> CreateAsync(BookRequest request)
         {
-            int totalSeatsToBook = request.Passengers.Count;
-
-            if (totalSeatsToBook == 0)
-                return new ServiceResponse { Status = ResponseType.None, Message = "No passengers provided." };
           
-            var schedule = await _db.TblSchedules
-                    .FirstOrDefaultAsync(x => x.Id == request.ScheduleId && !x.IsDelete);
-
+            // 1. Fetch Schedule
+            var schedule = await _db.TblSchedules.FirstOrDefaultAsync(x => x.Id == request.ScheduleId && !x.IsDelete);
             if (schedule == null)
-                    return new ServiceResponse { Status = ResponseType.NotFound, Message = "Schedule not found." };
+                return new ServiceResponse { Status = ResponseType.NotFound, Message = "Schedule not found." };
 
+            int totalSeatsToBook = request.Passengers.Count;
+            int maxCapacity = schedule.AvaliableSeat + schedule.BookSeat;
+
+            // 2. Check Capacity and Seat Validity
             if (schedule.AvaliableSeat < totalSeatsToBook)
-                    return new ServiceResponse { Status = ResponseType.None, Message = "Not enough seats available." };
+                return new ServiceResponse { Status = ResponseType.None, Message = "Not enough seats available." };
 
-            int totalSeats = schedule.AvaliableSeat + schedule.BookSeat;
-           
-            // var requestedSeats = request.Passengers.Select(x => x.SeatNo).ToList();
+            var requestedSeats = request.Passengers.Select(x => x.SeatNo).ToList();
+            if (requestedSeats.Any(s => s > maxCapacity))
+                return new ServiceResponse { Status = ResponseType.None, Message = "One or more Seat numbers are invalid for this schedule." };
 
-            // check already book seatno
-            //var alreadyBooked = await _db.TblBooks
-            //    .Where(x => x.ScheduleId == request.ScheduleId
-            //             && !x.IsDelete
-            //             && requestedSeats.Contains(x.Seatno))
-            //    .Select(x => x.Seatno)
-            //    .ToListAsync();
+            // 3. Check for existing bookings (optimized query)
+            var alreadyBooked = await _db.TblBooks
+                .Where(x => x.ScheduleId == request.ScheduleId && !x.IsDelete && requestedSeats.Contains(x.Seatno))
+                .Select(x => x.Seatno)
+                .ToListAsync();
 
-            //if (alreadyBooked.Any())
-            //{
-            //    return new ServiceResponse
-            //    {
-            //        Status = ResponseType.AlreadyExists,
-            //        Message = $"These seats are already taken: {string.Join(", ", alreadyBooked)}"
-            //    };
-            //}
+            if (alreadyBooked.Any())
+                return new ServiceResponse { Status = ResponseType.AlreadyExists, Message = $"Seats already taken: {string.Join(", ", alreadyBooked)}" };
 
-            foreach (var p in request.Passengers)
+            // 4. Bulk Add Bookings
+            var bookings = request.Passengers.Select(p => new TblBook
             {
-                if (p.SeatNo > totalSeats)
-                    return new ServiceResponse { Status = ResponseType.None, Message = $"Invalid SeatNo : {p.SeatNo}." };
+                Id = Guid.NewGuid().ToString(),
+                ScheduleId = request.ScheduleId,
+                Seatno = p.SeatNo,
+                Username = p.Username,
+                Phoneno = p.Phoneno,
+                IsDelete = false
+            });
 
-                var booking = new TblBook
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ScheduleId = request.ScheduleId,
-                        Seatno = p.SeatNo,      
-                        Username = p.Username,  
-                        Phoneno = p.Phoneno,    
-                        IsDelete = false
-                    };
-                    _db.TblBooks.Add(booking);
-             }
+            _db.TblBooks.AddRange(bookings);
 
-                schedule.AvaliableSeat -= totalSeatsToBook;
-                schedule.BookSeat += totalSeatsToBook;
+            schedule.AvaliableSeat -= totalSeatsToBook;
+            schedule.BookSeat += totalSeatsToBook;
 
-                int rowAffected = await _db.SaveChangesAsync();
-
-                return rowAffected > 0
-                    ? new ServiceResponse { Status = ResponseType.Success, Message = "Booking created successfully." }
-                    : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
-
-
+            return await _db.SaveChangesAsync() > 0
+                ? new ServiceResponse { Status = ResponseType.Success, Message = "Booking created successfully." }
+                : new ServiceResponse { Status = ResponseType.None, Message = "Failed to save booking." };
         }
+
     }
 }

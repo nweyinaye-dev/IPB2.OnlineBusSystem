@@ -29,10 +29,15 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
         [HttpPost("/book")]
         public async Task<IActionResult> CreateBooking(BookRequest request)
         {
-            //ResponseBaseModel validationRes = Validation(request);
+            if (string.IsNullOrWhiteSpace(request.ScheduleId))
+                return BadRequest(new ResponseBaseModel { IsSuccess = false, Message = "Schedule Id is required." });
 
-            //if (!validationRes.IsSuccess)
-            //    return BadRequest(new ResponseBaseModel { IsSuccess = false, Message = validationRes.Message });
+            if (request.Passengers == null || !request.Passengers.Any())
+                return BadRequest(new ResponseBaseModel { IsSuccess = false, Message = "No passengers provided." });
+
+            if (request.Passengers.Any(p => p.SeatNo <= 0 || string.IsNullOrWhiteSpace(p.Username) || string.IsNullOrWhiteSpace(p.Phoneno)))
+                return BadRequest(new ResponseBaseModel { IsSuccess = false, Message = "Passenger details (Seat, Name, Phone) are required." });
+
 
             var response = await _bookService.CreateAsync(request);
             return ResponseHelper.ConvertResponseType(response);
