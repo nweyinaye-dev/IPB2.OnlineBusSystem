@@ -81,6 +81,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             BookedFare = new ColumnHeader();
             BookedOrigin = new ColumnHeader();
             BookedDestination = new ColumnHeader();
+            btnRouteCancel = new Button();
+            btnRouteSearch = new Button();
+            textBox2 = new TextBox();
             ID = new ColumnHeader();
             delete = new ContextMenuStrip(components);
             Bus.SuspendLayout();
@@ -511,6 +514,33 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             BookedDestination.Text = "Destination";
             BookedDestination.Width = 120;
             // 
+            // btnRouteCancel
+            // 
+            btnRouteCancel.Location = new Point(316, 22);
+            btnRouteCancel.Name = "btnRouteCancel";
+            btnRouteCancel.Size = new Size(75, 23);
+            btnRouteCancel.TabIndex = 2;
+            btnRouteCancel.Text = "Cancel";
+            btnRouteCancel.UseVisualStyleBackColor = true;
+            btnRouteCancel.Click += btnRouteCancel_Click;
+            // 
+            // btnRouteSearch
+            // 
+            btnRouteSearch.Location = new Point(223, 23);
+            btnRouteSearch.Name = "btnRouteSearch";
+            btnRouteSearch.Size = new Size(75, 23);
+            btnRouteSearch.TabIndex = 1;
+            btnRouteSearch.Text = "Search";
+            btnRouteSearch.UseVisualStyleBackColor = true;
+            btnRouteSearch.Click += btnRouteSearch_Click;
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(28, 23);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(170, 31);
+            textBox2.TabIndex = 0;
+            // 
             // ID
             // 
             ID.Text = "ID";
@@ -566,6 +596,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         private Button btnRouteDelete;
         private Button btnRouteUpdate;
         private Button btnRouteCreate;
+        private Button btnRouteCancel;
+        private Button btnRouteSearch;
+        private TextBox textBox2;
         private ListView listView2;
         private ColumnHeader RouteName;
         private ColumnHeader Origin;

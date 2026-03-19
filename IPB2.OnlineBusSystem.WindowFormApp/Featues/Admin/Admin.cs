@@ -32,7 +32,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             listView1.View = View.Details;
 
             listView1.Items.Clear();
-
             var res = await _busService.GetBusesAsync(txtBusSearchText.Text.Trim());
 
             if (res != null && res.Buss.Count > 0)
@@ -52,14 +51,13 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         }
         private async void tabPage1_Enter(object sender, EventArgs e)
         {
-            await BindGrid();
+           await BindGrid();
         }
         private async void btnCreate_Click(object sender, EventArgs e)
         {
             var editForm = new BusNewForm();
             if (editForm.ShowDialog() == DialogResult.OK)
             {
-                await BindGrid();
             }
         }
         private async void btnUpdate_Click(object sender, EventArgs e)
@@ -83,7 +81,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             var editForm = new BusEditForm(bus);
             if (editForm.ShowDialog() == DialogResult.OK)
             {
-                await BindGrid();
             }
         }
         private async void btnDelete_Click(object sender, EventArgs e)
@@ -99,7 +96,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             if (response.Status == ResponseType.Success)
             {
                 MessageBox.Show(response.Message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                await BindGrid();
             }
             else
             {
@@ -110,29 +106,11 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         {
 
             await BindGrid();
-                
 
-            //var bus = await _busService.GetBusByIdAsync(id);
-            //if (bus != null)
-            //{
-            //    listView1.Items.Clear();
-            //    ListViewItem item = new ListViewItem(bus.BusNo);
-            //    item.Tag = bus.Id;
-            //    item.SubItems.Add(bus.BusName);
-            //    item.SubItems.Add(bus.BusType);
-            //    item.SubItems.Add(bus.TotalSeat.ToString());
-            //    listView1.Items.Add(item);
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Bus not found.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //}
         }
 
         private async void btnBusCancel_Click(object sender, EventArgs e)
         {
-            txtBusSearchText.Clear();
-            await BindGrid();
         }
 
         #region Route Tab
@@ -160,6 +138,37 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
 
         private async void tabPage2_Enter(object sender, EventArgs e)
         {
+            await BindRouteGrid(1, 10);
+        }
+
+        private async void btnRouteSearch_Click(object sender, EventArgs e)
+        {
+            var id = textBox2.Text.Trim();
+            if (string.IsNullOrEmpty(id))
+            {
+                await BindRouteGrid(1, 10);
+                return;
+            }
+
+            var route = await _routeService.GetRouteByIdAsync(id);
+            if (route != null)
+            {
+                listView2.Items.Clear();
+                ListViewItem item = new ListViewItem(route.RouteName);
+                item.Tag = route.Id;
+                item.SubItems.Add(route.Origin);
+                item.SubItems.Add(route.Destination);
+                listView2.Items.Add(item);
+            }
+            else
+            {
+                MessageBox.Show("Route not found.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private async void btnRouteCancel_Click(object sender, EventArgs e)
+        {
+            textBox2.Clear();
             await BindRouteGrid(1, 10);
         }
 
@@ -221,6 +230,11 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         }
 
         #endregion
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #region Schedule Tab
 
@@ -287,7 +301,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
 
         private async void btnSchCancel_Click(object sender, EventArgs e)
         {
-            txtSearchTerm.Clear();
             await BindScheduleGrid(1, 10);
         }
 
@@ -349,7 +362,10 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             }
         }
 
+
         #endregion
+
+
 
         #region Booking Tab
 
@@ -388,6 +404,8 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         }
 
         #endregion
+
+    
     }
 }
 
