@@ -59,6 +59,7 @@ public class ScheduleListResponse
     public string Id { get; set; }
     public string BusId { get; set; } = null!;
     public string AvaliableBusName { get; set; } = null!;
+    public string AvaliableBusNo { get; set; } = null!;
     public DateTime Date { get; set; }
     public int Fare { get; set; }
     public string ArrivalTime { get; set; } = null!;

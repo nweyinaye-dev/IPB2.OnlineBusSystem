@@ -1,4 +1,5 @@
 using Dapper;
+using IPB2.OnlineBusSystem.WebApi.Common;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -6,18 +7,10 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Report
 {
     public class BookingReportService
     {
-        SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder()
-        {
-            DataSource = ".",
-            InitialCatalog = "IPB2_OnlineBusBooking",
-            UserID = "sa",
-            Password = "sasa@123",
-            TrustServerCertificate = true,
-        };
 
         public async Task<BookingDetailResponse> GetBookingDetailAsync()
         {
-            using (IDbConnection db = new SqlConnection(connectionString.ConnectionString))
+            using (IDbConnection db = new SqlConnection(ConnectionString.GetConnection()))
             {
                 db.Open();
 
@@ -37,7 +30,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Report
         }
         public async Task<BookingDetailResponse> GetBookingDetailAsync(string username,string phoneno)
         {
-            using (IDbConnection db = new SqlConnection(connectionString.ConnectionString))
+            using (IDbConnection db = new SqlConnection(ConnectionString.GetConnection()))
             {
                 db.Open();
 
@@ -58,7 +51,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Report
         }
         public async Task<BookingDetailResponse> GetBookingDetailByUserAsync(string username, string phoneno)
         {
-            using (IDbConnection db = new SqlConnection(connectionString.ConnectionString))
+            using (IDbConnection db = new SqlConnection(ConnectionString.GetConnection()))
             {
                 db.Open();
 

@@ -1,7 +1,6 @@
 ﻿using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
 using IPB2.OnlineBusSystem.WebApi.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
 {

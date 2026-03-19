@@ -66,7 +66,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             btnSchCancel = new Button();
             btnSchUpdate = new Button();
             btnSchSearch = new Button();
-            txtSearchTerm = new TextBox();
+            dtpScheduleDate = new DateTimePicker();
             tabPage4 = new TabPage();
             listView4 = new ListView();
             TravelDate = new ColumnHeader();
@@ -86,6 +86,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             textBox2 = new TextBox();
             ID = new ColumnHeader();
             delete = new ContextMenuStrip(components);
+            AvaliableBusNo = new ColumnHeader();
             Bus.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
@@ -99,11 +100,10 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             Bus.Controls.Add(tabPage2);
             Bus.Controls.Add(tabPage3);
             Bus.Controls.Add(tabPage4);
-            Bus.Location = new Point(17, 20);
-            Bus.Margin = new Padding(4, 5, 4, 5);
+            Bus.Location = new Point(12, 12);
             Bus.Name = "Bus";
             Bus.SelectedIndex = 0;
-            Bus.Size = new Size(1096, 710);
+            Bus.Size = new Size(767, 426);
             Bus.TabIndex = 0;
             // 
             // tabPage1
@@ -115,11 +115,10 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             tabPage1.Controls.Add(listView1);
             tabPage1.Controls.Add(btnBusCancel);
             tabPage1.Controls.Add(btnBusSearch);
-            tabPage1.Location = new Point(4, 34);
-            tabPage1.Margin = new Padding(4, 5, 4, 5);
+            tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(4, 5, 4, 5);
-            tabPage1.Size = new Size(1088, 672);
+            tabPage1.Padding = new Padding(3, 3, 3, 3);
+            tabPage1.Size = new Size(759, 398);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Bus";
             tabPage1.UseVisualStyleBackColor = true;
@@ -127,10 +126,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnCreate
             // 
-            btnCreate.Location = new Point(620, 52);
-            btnCreate.Margin = new Padding(4, 5, 4, 5);
+            btnCreate.Location = new Point(434, 31);
             btnCreate.Name = "btnCreate";
-            btnCreate.Size = new Size(107, 38);
+            btnCreate.Size = new Size(75, 23);
             btnCreate.TabIndex = 8;
             btnCreate.Text = "New";
             btnCreate.UseVisualStyleBackColor = true;
@@ -138,10 +136,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(851, 50);
-            btnDelete.Margin = new Padding(4, 5, 4, 5);
+            btnDelete.Location = new Point(596, 30);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(107, 38);
+            btnDelete.Size = new Size(75, 23);
             btnDelete.TabIndex = 7;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = true;
@@ -149,10 +146,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnUpdate
             // 
-            btnUpdate.Location = new Point(736, 52);
-            btnUpdate.Margin = new Padding(4, 5, 4, 5);
+            btnUpdate.Location = new Point(515, 31);
             btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(107, 38);
+            btnUpdate.Size = new Size(75, 23);
             btnUpdate.TabIndex = 6;
             btnUpdate.Text = "Update";
             btnUpdate.UseVisualStyleBackColor = true;
@@ -160,20 +156,18 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // txtBusSearchText
             // 
-            txtBusSearchText.Location = new Point(46, 52);
-            txtBusSearchText.Margin = new Padding(4, 5, 4, 5);
+            txtBusSearchText.Location = new Point(32, 31);
             txtBusSearchText.Name = "txtBusSearchText";
-            txtBusSearchText.Size = new Size(307, 31);
+            txtBusSearchText.Size = new Size(216, 23);
             txtBusSearchText.TabIndex = 5;
             // 
             // listView1
             // 
             listView1.Columns.AddRange(new ColumnHeader[] { BusNo, BusName, BusType, TotalSeat });
             listView1.ContextMenuStrip = edit;
-            listView1.Location = new Point(46, 122);
-            listView1.Margin = new Padding(4, 5, 4, 5);
+            listView1.Location = new Point(32, 73);
             listView1.Name = "listView1";
-            listView1.Size = new Size(911, 491);
+            listView1.Size = new Size(639, 296);
             listView1.TabIndex = 4;
             listView1.UseCompatibleStateImageBehavior = false;
             // 
@@ -206,10 +200,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnBusCancel
             // 
-            btnBusCancel.Location = new Point(479, 52);
-            btnBusCancel.Margin = new Padding(4, 5, 4, 5);
+            btnBusCancel.Location = new Point(335, 31);
             btnBusCancel.Name = "btnBusCancel";
-            btnBusCancel.Size = new Size(107, 38);
+            btnBusCancel.Size = new Size(75, 23);
             btnBusCancel.TabIndex = 2;
             btnBusCancel.Text = "Cancel";
             btnBusCancel.UseVisualStyleBackColor = true;
@@ -217,10 +210,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnBusSearch
             // 
-            btnBusSearch.Location = new Point(363, 52);
-            btnBusSearch.Margin = new Padding(4, 5, 4, 5);
+            btnBusSearch.Location = new Point(254, 31);
             btnBusSearch.Name = "btnBusSearch";
-            btnBusSearch.Size = new Size(107, 38);
+            btnBusSearch.Size = new Size(75, 23);
             btnBusSearch.TabIndex = 1;
             btnBusSearch.Text = "Search";
             btnBusSearch.UseVisualStyleBackColor = true;
@@ -232,11 +224,10 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             tabPage2.Controls.Add(btnRouteDelete);
             tabPage2.Controls.Add(btnRouteUpdate);
             tabPage2.Controls.Add(btnRouteCreate);
-            tabPage2.Location = new Point(4, 34);
-            tabPage2.Margin = new Padding(4, 5, 4, 5);
+            tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(4, 5, 4, 5);
-            tabPage2.Size = new Size(1088, 672);
+            tabPage2.Padding = new Padding(3, 3, 3, 3);
+            tabPage2.Size = new Size(759, 398);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Route";
             tabPage2.UseVisualStyleBackColor = true;
@@ -245,10 +236,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // listView2
             // 
             listView2.Columns.AddRange(new ColumnHeader[] { RouteName, Origin, Destination });
-            listView2.Location = new Point(40, 108);
-            listView2.Margin = new Padding(4, 5, 4, 5);
+            listView2.Location = new Point(28, 65);
             listView2.Name = "listView2";
-            listView2.Size = new Size(785, 411);
+            listView2.Size = new Size(551, 248);
             listView2.TabIndex = 6;
             listView2.UseCompatibleStateImageBehavior = false;
             // 
@@ -269,10 +259,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnRouteDelete
             // 
-            btnRouteDelete.Location = new Point(718, 37);
-            btnRouteDelete.Margin = new Padding(4, 5, 4, 5);
+            btnRouteDelete.Location = new Point(503, 22);
             btnRouteDelete.Name = "btnRouteDelete";
-            btnRouteDelete.Size = new Size(107, 38);
+            btnRouteDelete.Size = new Size(75, 23);
             btnRouteDelete.TabIndex = 5;
             btnRouteDelete.Text = "Delete";
             btnRouteDelete.UseVisualStyleBackColor = true;
@@ -280,10 +269,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnRouteUpdate
             // 
-            btnRouteUpdate.Location = new Point(581, 37);
-            btnRouteUpdate.Margin = new Padding(4, 5, 4, 5);
+            btnRouteUpdate.Location = new Point(407, 22);
             btnRouteUpdate.Name = "btnRouteUpdate";
-            btnRouteUpdate.Size = new Size(107, 38);
+            btnRouteUpdate.Size = new Size(75, 23);
             btnRouteUpdate.TabIndex = 4;
             btnRouteUpdate.Text = "Update";
             btnRouteUpdate.UseVisualStyleBackColor = true;
@@ -291,10 +279,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnRouteCreate
             // 
-            btnRouteCreate.Location = new Point(445, 37);
-            btnRouteCreate.Margin = new Padding(4, 5, 4, 5);
+            btnRouteCreate.Location = new Point(312, 22);
             btnRouteCreate.Name = "btnRouteCreate";
-            btnRouteCreate.Size = new Size(107, 38);
+            btnRouteCreate.Size = new Size(75, 23);
             btnRouteCreate.TabIndex = 3;
             btnRouteCreate.Text = "New";
             btnRouteCreate.UseVisualStyleBackColor = true;
@@ -308,12 +295,11 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             tabPage3.Controls.Add(btnSchCancel);
             tabPage3.Controls.Add(btnSchUpdate);
             tabPage3.Controls.Add(btnSchSearch);
-            tabPage3.Controls.Add(txtSearchTerm);
-            tabPage3.Location = new Point(4, 34);
-            tabPage3.Margin = new Padding(4, 5, 4, 5);
+            tabPage3.Controls.Add(dtpScheduleDate);
+            tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(4, 5, 4, 5);
-            tabPage3.Size = new Size(1088, 672);
+            tabPage3.Padding = new Padding(3, 3, 3, 3);
+            tabPage3.Size = new Size(759, 398);
             tabPage3.TabIndex = 2;
             tabPage3.Text = "Schedule";
             tabPage3.UseVisualStyleBackColor = true;
@@ -321,60 +307,66 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // listView3
             // 
-            listView3.Columns.AddRange(new ColumnHeader[] { AvaliableBusName, Date, Fare, ArrivalTime, DepatureTime, Route, AvaliableSeat, BookedSeat });
-            listView3.Location = new Point(27, 115);
-            listView3.Margin = new Padding(4, 5, 4, 5);
+            listView3.Columns.AddRange(new ColumnHeader[] { AvaliableBusName, Date, Fare, ArrivalTime, DepatureTime, Route, AvaliableSeat, BookedSeat, AvaliableBusNo });
+            listView3.Location = new Point(19, 69);
             listView3.Name = "listView3";
-            listView3.Size = new Size(1034, 512);
+            listView3.Size = new Size(725, 309);
             listView3.TabIndex = 6;
             listView3.UseCompatibleStateImageBehavior = false;
             // 
             // AvaliableBusName
             // 
+            AvaliableBusName.DisplayIndex = 1;
             AvaliableBusName.Text = "BusName";
             AvaliableBusName.Width = 120;
             // 
             // Date
             // 
+            Date.DisplayIndex = 2;
             Date.Text = "Date";
             Date.Width = 120;
             // 
             // Fare
             // 
+            Fare.DisplayIndex = 3;
             Fare.Text = "Fare";
             Fare.Width = 120;
             // 
             // ArrivalTime
             // 
+            ArrivalTime.DisplayIndex = 4;
             ArrivalTime.Text = "ArrivalTime";
             ArrivalTime.Width = 120;
             // 
             // DepatureTime
             // 
+            DepatureTime.DisplayIndex = 5;
             DepatureTime.Text = "DepatureTime";
             DepatureTime.Width = 130;
             // 
             // Route
             // 
+            Route.DisplayIndex = 6;
             Route.Text = "Route";
             Route.Width = 120;
             // 
             // AvaliableSeat
             // 
+            AvaliableSeat.DisplayIndex = 7;
             AvaliableSeat.Text = "AvaliableSeat";
             AvaliableSeat.Width = 120;
             // 
             // BookedSeat
             // 
+            BookedSeat.DisplayIndex = 8;
             BookedSeat.Text = "BookedSeat";
             BookedSeat.Width = 120;
             // 
             // btnSchDelete
             // 
-            btnSchDelete.Location = new Point(883, 32);
-            btnSchDelete.Margin = new Padding(4, 5, 4, 5);
+            btnSchDelete.Location = new Point(618, 19);
             btnSchDelete.Name = "btnSchDelete";
-            btnSchDelete.Size = new Size(107, 38);
+            btnSchDelete.Size = new Size(75, 23);
             btnSchDelete.TabIndex = 5;
             btnSchDelete.Text = "Delete";
             btnSchDelete.UseVisualStyleBackColor = true;
@@ -382,10 +374,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnSchCreate
             // 
-            btnSchCreate.Location = new Point(624, 33);
-            btnSchCreate.Margin = new Padding(4, 5, 4, 5);
+            btnSchCreate.Location = new Point(437, 20);
             btnSchCreate.Name = "btnSchCreate";
-            btnSchCreate.Size = new Size(107, 38);
+            btnSchCreate.Size = new Size(75, 23);
             btnSchCreate.TabIndex = 4;
             btnSchCreate.Text = "New";
             btnSchCreate.UseVisualStyleBackColor = true;
@@ -393,10 +384,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnSchCancel
             // 
-            btnSchCancel.Location = new Point(493, 33);
-            btnSchCancel.Margin = new Padding(4, 5, 4, 5);
+            btnSchCancel.Location = new Point(345, 20);
             btnSchCancel.Name = "btnSchCancel";
-            btnSchCancel.Size = new Size(107, 38);
+            btnSchCancel.Size = new Size(75, 23);
             btnSchCancel.TabIndex = 3;
             btnSchCancel.Text = "Cancel";
             btnSchCancel.UseVisualStyleBackColor = true;
@@ -404,10 +394,9 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnSchUpdate
             // 
-            btnSchUpdate.Location = new Point(754, 32);
-            btnSchUpdate.Margin = new Padding(4, 5, 4, 5);
+            btnSchUpdate.Location = new Point(528, 19);
             btnSchUpdate.Name = "btnSchUpdate";
-            btnSchUpdate.Size = new Size(107, 38);
+            btnSchUpdate.Size = new Size(75, 23);
             btnSchUpdate.TabIndex = 2;
             btnSchUpdate.Text = "Update";
             btnSchUpdate.UseVisualStyleBackColor = true;
@@ -415,31 +404,30 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             // btnSchSearch
             // 
-            btnSchSearch.Enabled = false;
-            btnSchSearch.Location = new Point(360, 33);
-            btnSchSearch.Margin = new Padding(4, 5, 4, 5);
+            btnSchSearch.Location = new Point(252, 20);
             btnSchSearch.Name = "btnSchSearch";
-            btnSchSearch.Size = new Size(107, 38);
+            btnSchSearch.Size = new Size(75, 23);
             btnSchSearch.TabIndex = 1;
             btnSchSearch.Text = "Search";
             btnSchSearch.UseVisualStyleBackColor = true;
             btnSchSearch.Click += btnSchSearch_Click;
             // 
-            // txtSearchTerm
+            // dtpScheduleDate
             // 
-            txtSearchTerm.Location = new Point(53, 33);
-            txtSearchTerm.Margin = new Padding(4, 5, 4, 5);
-            txtSearchTerm.Name = "txtSearchTerm";
-            txtSearchTerm.Size = new Size(267, 31);
-            txtSearchTerm.TabIndex = 0;
+            dtpScheduleDate.Format = DateTimePickerFormat.Short;
+            dtpScheduleDate.Location = new Point(37, 20);
+            dtpScheduleDate.Name = "dtpScheduleDate";
+            dtpScheduleDate.Size = new Size(188, 23);
+            dtpScheduleDate.TabIndex = 0;
             // 
             // tabPage4
             // 
             tabPage4.Controls.Add(listView4);
-            tabPage4.Location = new Point(4, 34);
+            tabPage4.Location = new Point(4, 24);
+            tabPage4.Margin = new Padding(2, 2, 2, 2);
             tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(1088, 672);
+            tabPage4.Padding = new Padding(2, 2, 2, 2);
+            tabPage4.Size = new Size(759, 398);
             tabPage4.TabIndex = 3;
             tabPage4.Text = "Booking";
             tabPage4.UseVisualStyleBackColor = true;
@@ -448,9 +436,10 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // listView4
             // 
             listView4.Columns.AddRange(new ColumnHeader[] { TravelDate, Username, Phoneno, SeatNo, BookedBusNo, BookedBusName, BookedBusType, BookedArrivalTime, BookedDepartureTime, BookedFare, BookedOrigin, BookedDestination });
-            listView4.Location = new Point(19, 46);
+            listView4.Location = new Point(13, 28);
+            listView4.Margin = new Padding(2, 2, 2, 2);
             listView4.Name = "listView4";
-            listView4.Size = new Size(1037, 510);
+            listView4.Size = new Size(727, 308);
             listView4.TabIndex = 0;
             listView4.UseCompatibleStateImageBehavior = false;
             // 
@@ -538,7 +527,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             // 
             textBox2.Location = new Point(28, 23);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(170, 31);
+            textBox2.Size = new Size(170, 23);
             textBox2.TabIndex = 0;
             // 
             // ID
@@ -553,13 +542,17 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             delete.Size = new Size(61, 4);
             delete.Text = "delete";
             // 
+            // AvaliableBusNo
+            // 
+            AvaliableBusNo.DisplayIndex = 0;
+            AvaliableBusNo.Text = "BusNo";
+            // 
             // Admin
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1127, 895);
+            ClientSize = new Size(789, 537);
             Controls.Add(Bus);
-            Margin = new Padding(4, 5, 4, 5);
             Name = "Admin";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Admin";
@@ -568,7 +561,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             tabPage1.PerformLayout();
             tabPage2.ResumeLayout(false);
             tabPage3.ResumeLayout(false);
-            tabPage3.PerformLayout();
             tabPage4.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -603,7 +595,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         private ColumnHeader RouteName;
         private ColumnHeader Origin;
         private ColumnHeader Destination;
-        private TextBox txtSearchTerm;
+        private System.Windows.Forms.DateTimePicker dtpScheduleDate;
         private Button btnSchDelete;
         private Button btnSchCreate;
         private Button btnSchCancel;
@@ -633,5 +625,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         private ColumnHeader BookedFare;
         private ColumnHeader BookedOrigin;
         private ColumnHeader BookedDestination;
+        private ColumnHeader AvaliableBusNo;
     }
 }

@@ -11,18 +11,9 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
     {
         AppDbContext _db = new AppDbContext();
 
-        SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder()
-        {
-            DataSource = ".",
-            InitialCatalog = "IPB2_OnlineBusBooking",
-            UserID = "sa",
-            Password = "sasa@123",
-            TrustServerCertificate = true,
-        };
-
         public async Task<SearchBusResponse> SearchBus(SearchBusRequest request)
         {
-            using (IDbConnection db = new SqlConnection(connectionString.ConnectionString))
+            using (IDbConnection db = new SqlConnection(ConnectionString.GetConnection()))
             {
                 db.Open();
 
@@ -47,7 +38,6 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
         public async Task<ServiceResponse> CreateAsync(BookRequest request)
         {
           
-            // 1. Fetch Schedule
             var schedule = await _db.TblSchedules.FirstOrDefaultAsync(x => x.Id == request.ScheduleId && !x.IsDelete);
             if (schedule == null)
                 return new ServiceResponse { Status = ResponseType.NotFound, Message = "Schedule not found." };
@@ -55,7 +45,6 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
             int totalSeatsToBook = request.Passengers.Count;
             int maxCapacity = schedule.AvaliableSeat + schedule.BookSeat;
 
-            // 2. Check Capacity and Seat Validity
             if (schedule.AvaliableSeat < totalSeatsToBook)
                 return new ServiceResponse { Status = ResponseType.None, Message = "Not enough seats available." };
 
@@ -63,7 +52,6 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
             if (requestedSeats.Any(s => s > maxCapacity))
                 return new ServiceResponse { Status = ResponseType.None, Message = "One or more Seat numbers are invalid for this schedule." };
 
-            // 3. Check for existing bookings (optimized query)
             var alreadyBooked = await _db.TblBooks
                 .Where(x => x.ScheduleId == request.ScheduleId && !x.IsDelete && requestedSeats.Contains(x.Seatno))
                 .Select(x => x.Seatno)

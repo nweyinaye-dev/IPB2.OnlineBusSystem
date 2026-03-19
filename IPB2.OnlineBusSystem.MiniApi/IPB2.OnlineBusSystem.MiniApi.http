@@ -1,0 +1,6 @@
+@IPB2.OnlineBusSystem.MiniApi_HostAddress = http://localhost:5131
+
+GET {{IPB2.OnlineBusSystem.MiniApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

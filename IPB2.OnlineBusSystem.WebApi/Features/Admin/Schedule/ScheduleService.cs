@@ -14,14 +14,7 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
     public class ScheduleService
     {
         AppDbContext _db = new AppDbContext();
-        SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder()
-        {
-            DataSource = ".",
-            InitialCatalog = "IPB2_OnlineBusBooking",
-            UserID = "sa",
-            Password = "sasa@123",
-            TrustServerCertificate = true,
-        };
+       
         public async Task<GetScheduleResponse> GetScheduleAsync(int pageNo, int pageSize)
         {
             var Schedule = await _db.TblSchedules
@@ -46,20 +39,21 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
             return new GetScheduleResponse { Schedules = Schedule };
         }
 
-        public async Task<GetScheduleListResponse> GetScheduleAsync()
+        public async Task<GetScheduleListResponse> GetScheduleAsync(string? searchDate)
         {
-            using (IDbConnection db = new SqlConnection(connectionString.ConnectionString))
+            using (IDbConnection db = new SqlConnection(ConnectionString.GetConnection()))
             {
                 db.Open();
 
-                var sql = $@"SELECT 
-                            s.Id, s.BusId, b.BusName as AvaliableBusName, CAST(s.Date AS DATE) as Date, s.Fare, 
+                    var sql = $@"SELECT 
+                            s.Id, s.BusId, b.BusName as AvaliableBusName,b.BusNo as AvaliableBusNo,
+                            CAST(s.Date AS DATE) as Date, s.Fare, 
                             s.ArrivalTime, s.DepartureTime, s.RouteId, r.RouteName as Route,
                             s.AvaliableSeat, s.BookSeat as BookedSeat
                         FROM Tbl_Schedule s
                         LEFT JOIN Tbl_BusDetail b ON s.BusId = b.Id
                         LEFT JOIN Tbl_Route r ON s.RouteId = r.Id
-                        WHERE  s.IsDelete = 0
+                        WHERE  s.IsDelete = 0 and CAST(s.Date AS DATE) = '{searchDate}'
                         ";
 
                 List<ScheduleListResponse> results = db.Query<ScheduleListResponse>(sql).ToList();

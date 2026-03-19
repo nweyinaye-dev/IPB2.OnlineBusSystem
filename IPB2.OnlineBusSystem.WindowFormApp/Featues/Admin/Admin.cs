@@ -1,4 +1,4 @@
-using Azure;
+﻿using Azure;
 using IPB2.OnlineBusSystem.WebApi.Common;
 using IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus;
 using IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
@@ -237,13 +237,12 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         }
 
         #region Schedule Tab
-
-        private async Task BindScheduleGrid(int pageNo, int pageSize)
+        private async Task BindScheduleGrid()
         {
             listView3.View = View.Details;
             listView3.Items.Clear();
-
-            var res = await _scheduleService.GetScheduleAsync();
+            var searchDate = dtpScheduleDate.Value.ToString("yyyy-MM-dd");
+            var res = await _scheduleService.GetScheduleAsync(searchDate);
 
             if (res != null && res.Schedules.Count > 0)
             {
@@ -258,6 +257,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
                     item.SubItems.Add(sch.Route);
                     item.SubItems.Add(sch.AvaliableSeat.ToString());
                     item.SubItems.Add(sch.BookedSeat.ToString());
+                    item.SubItems.Add(sch.AvaliableBusNo);
 
                     listView3.Items.Add(item);
                 }
@@ -266,42 +266,18 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
 
         private async void tabPage3_Enter(object sender, EventArgs e)
         {
-            await BindScheduleGrid(1, 10);
+            await BindScheduleGrid();
         }
 
         private async void btnSchSearch_Click(object sender, EventArgs e)
         {
-            var id = txtSearchTerm.Text.Trim();
-            if (string.IsNullOrEmpty(id))
-            {
-                await BindScheduleGrid(1, 10);
-                return;
-            }
-
-            var sch = await _scheduleService.GetScheduleByIdAsync(id);
-            if (sch != null)
-            {
-                listView3.Items.Clear();
-                ListViewItem item = new ListViewItem(sch.BusId); // Showing BusId as placeholder if name not available on detail
-                item.Tag = sch.Id;
-                item.SubItems.Add(sch.Date.ToString("yyyy-MM-dd"));
-                item.SubItems.Add(sch.Fare.ToString("N0"));
-                item.SubItems.Add(sch.ArrivalTime);
-                item.SubItems.Add(sch.DepartureTime);
-                item.SubItems.Add(sch.RouteId); // Showing RouteId as placeholder
-                item.SubItems.Add(sch.AvaliableSeat.ToString());
-                item.SubItems.Add(sch.BookSeat.ToString());
-                listView3.Items.Add(item);
-            }
-            else
-            {
-                MessageBox.Show("Schedule not found.", "Search Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            await BindScheduleGrid();
         }
 
         private async void btnSchCancel_Click(object sender, EventArgs e)
         {
-            await BindScheduleGrid(1, 10);
+            dtpScheduleDate.Value = DateTime.Now;
+            await BindScheduleGrid();
         }
 
         private async void btnSchCreate_Click(object sender, EventArgs e)
@@ -309,7 +285,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             var createForm = new ScheduleNewForm();
             if (createForm.ShowDialog() == DialogResult.OK)
             {
-                await BindScheduleGrid(1, 10);
+                await BindScheduleGrid();
             }
         }
 
@@ -334,7 +310,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             var editForm = new ScheduleEditForm(schedule);
             if (editForm.ShowDialog() == DialogResult.OK)
             {
-                await BindScheduleGrid(1, 10);
+                await BindScheduleGrid();
             }
         }
 
@@ -353,7 +329,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
                 if (response.Status == ResponseType.Success)
                 {
                     MessageBox.Show(response.Message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await BindScheduleGrid(1, 10);
+                    await BindScheduleGrid();
                 }
                 else
                 {
@@ -361,11 +337,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
                 }
             }
         }
-
-
         #endregion
-
-
 
         #region Booking Tab
 
