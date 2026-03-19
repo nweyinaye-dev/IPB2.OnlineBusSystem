@@ -26,6 +26,33 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
                 .ToListAsync();
             return new GetBusResponse { Buss = Bus };
         }
+
+        public async Task<GetBusResponse> GetBusesAsync(string? searchTerm)
+        {
+            var query = _db.TblBusDetails
+                .Where(x => !x.IsDelete);
+
+            // Add search filter if searchTerm is provided
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(x => x.BusName.Contains(searchTerm)
+                                      || x.BusNo.Contains(searchTerm));
+            }
+
+            var busList = await query
+                .OrderByDescending(x => x.BusName)
+                .Select(x => new BusResponse
+                {
+                    Id = x.Id,
+                    BusNo = x.BusNo,
+                    BusName = x.BusName,
+                    BusType = x.BusType,
+                    TotalSeat = x.TotalSeat
+                })
+                .ToListAsync();
+
+            return new GetBusResponse { Buss = busList };
+        }
         public async Task<BusResponse?> GetBusByIdAsync(string id)
         {
             var Bus = await _db.TblBusDetails
@@ -137,5 +164,19 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
                 : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
 
         }
+        
+        public async Task<List<BusComboSetModel>> GetBusComboSet()
+        {
+            var Bus = await _db.TblBusDetails
+                .Where(x => !x.IsDelete)
+                .OrderByDescending(x => x.BusName)
+                .Select(x => new BusComboSetModel
+                {
+                    Id = x.Id,
+                    BusName = x.BusName
+                })
+                .ToListAsync();
+            return Bus;
+        } 
     }
 }

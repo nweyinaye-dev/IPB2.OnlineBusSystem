@@ -36,3 +36,10 @@ public class GetRoutesResponse
     public int PageSize { get; set; }
     public int TotalPages { get; set; }
 }
+public class RouteComboSetModel
+{
+    public string Id { get; set; } = null!;
+    public string RouteName { get; set; } = null!;
+    public string Origin { get; set; } = null!;
+    public string Destination { get; set; } = null!;
+}

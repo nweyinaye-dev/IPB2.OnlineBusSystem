@@ -1,7 +1,12 @@
 ﻿
+using Azure.Core;
+using Dapper;
 using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
 using IPB2.OnlineBusSystem.WebApi.Common;
+using IPB2.OnlineBusSystem.WebApi.Features.User;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using static Azure.Core.HttpHeader;
 
 namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
@@ -9,13 +14,21 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
     public class ScheduleService
     {
         AppDbContext _db = new AppDbContext();
+        SqlConnectionStringBuilder connectionString = new SqlConnectionStringBuilder()
+        {
+            DataSource = ".",
+            InitialCatalog = "IPB2_OnlineBusBooking",
+            UserID = "sa",
+            Password = "sasa@123",
+            TrustServerCertificate = true,
+        };
         public async Task<GetScheduleResponse> GetScheduleAsync(int pageNo, int pageSize)
         {
             var Schedule = await _db.TblSchedules
                 .Where(x => !x.IsDelete)
                 .OrderByDescending(x => x.Date)
-                .Skip((pageNo - 1) * pageSize)
-                 .Take(pageSize)
+                //.Skip((pageNo - 1) * pageSize)
+                // .Take(pageSize)
                 .Select(x => new ScheduleResponse
                 {
                     Id = x.Id,
@@ -31,6 +44,27 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
                 .ToListAsync();
 
             return new GetScheduleResponse { Schedules = Schedule };
+        }
+
+        public async Task<GetScheduleListResponse> GetScheduleAsync()
+        {
+            using (IDbConnection db = new SqlConnection(connectionString.ConnectionString))
+            {
+                db.Open();
+
+                var sql = $@"SELECT 
+                            s.Id, s.BusId, b.BusName as AvaliableBusName, CAST(s.Date AS DATE) as Date, s.Fare, 
+                            s.ArrivalTime, s.DepartureTime, s.RouteId, r.RouteName as Route,
+                            s.AvaliableSeat, s.BookSeat as BookedSeat
+                        FROM Tbl_Schedule s
+                        LEFT JOIN Tbl_BusDetail b ON s.BusId = b.Id
+                        LEFT JOIN Tbl_Route r ON s.RouteId = r.Id
+                        WHERE  s.IsDelete = 0
+                        ";
+
+                List<ScheduleListResponse> results = db.Query<ScheduleListResponse>(sql).ToList();
+                return new GetScheduleListResponse { Schedules = results };
+            }
         }
 
         public async Task<ScheduleResponse?> GetScheduleByIdAsync(string id)
@@ -178,7 +212,7 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
             if (request.Date.HasValue)
                 Schedule.Date = request.Date.Value;
 
-                var isScheduleExist = await _db.TblSchedules.Where(x => !x.IsDelete && x.Date == Schedule.Date
+            var isScheduleExist = await _db.TblSchedules.Where(x => !x.IsDelete && x.Date == Schedule.Date
                                 && x.BusId == Schedule.BusId).AnyAsync();
             if (isScheduleExist)
                 return new ServiceResponse { Status = ResponseType.AlreadyExists, Message = $"Bus is already assigned for {Schedule.Date}." };

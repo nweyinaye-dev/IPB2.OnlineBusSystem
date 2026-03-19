@@ -12,6 +12,8 @@ public class SearchBusResponseModel
     public string secheduleId { get; set; } = null!;
     public string BusNo { get; set; } = null!;
     public string BusName { get; set; } = null!;
+
+    public string BusType { get; set; } = null!;
     public string DepartureTime { get; set; } = null!;
     public string ArrivalTime { get; set; } = null!;
     public int AvaliableSeat { get; set; }

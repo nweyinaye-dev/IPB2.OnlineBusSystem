@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
 using IPB2.OnlineBusSystem.WebApi.Common;
-using IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -27,7 +26,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.User
             {
                 db.Open();
 
-                var sql = $@"SELECT s.id as secheduleId,b.BusNo,b.BusName,s.DepartureTime,s.ArrivalTime,s.AvaliableSeat,s.Fare
+                var sql = $@"SELECT s.id as secheduleId,b.BusNo,b.BusName,b.BusType,s.DepartureTime,s.ArrivalTime,s.AvaliableSeat,s.Fare
                         FROM [dbo].[Tbl_Schedule] s
                         INNER JOIN [dbo].[Tbl_Route] r ON s.RouteId = r.ID
                         INNER JOIN [dbo].[Tbl_BusDetail] b ON s.BusId = b.ID

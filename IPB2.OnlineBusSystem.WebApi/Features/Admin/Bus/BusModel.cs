@@ -36,3 +36,10 @@ public class GetBusResponse
     public int PageSize { get; set; }
     public int TotalPages { get; set; }
 }
+
+
+public class BusComboSetModel
+{
+    public string Id { get; set;  } = null!;
+    public string BusName { get;set;  } = null!;
+}

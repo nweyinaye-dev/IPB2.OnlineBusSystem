@@ -11,8 +11,6 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin
 {
     public class AdminUI
     {
-        //private AccountService accountService = new AccountService();
-        //private string? _loginMobileNo;
         public async Task Start()
         {
             while (true)
@@ -27,21 +25,22 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin
             Console.WriteLine("1) Route");
             Console.WriteLine("2) Bus");
             Console.WriteLine("3) Schedule");
+            Console.WriteLine("4) Exit");
             Console.Write("Please choose option: ");
             var choose = Console.ReadLine();
             bool isFlag = int.TryParse(choose, out int res);
             switch (res)
             {
                 case 1: await RouteMenu(); break;
-                //case 2: BusMenu(); break;
-                //case 3: SchdeuleMenu(); break;
-                //case 4:
-                //    {
-                //        Console.WriteLine("Thanks for using.");
-                //        //Exit();
-                //        break;
-                //    }
-                //default: Console.WriteLine("Invalid option.Please try again."); break;
+                case 2: await BusMenu(); break;
+                case 3: await SchdeuleMenu(); break;
+                case 4:
+                    {
+                        Console.WriteLine("Thanks for using.");
+                        Environment.Exit(0);
+                        break;
+                    }
+                default: Console.WriteLine("Invalid option.Please try again."); break;
             }
 
         }
@@ -50,13 +49,13 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin
         {
             await new RouteUI().Start();
         }
-        private void BusMenu()
+        private async Task BusMenu()
         {
-            new BusUI().Start();
+            await new BusUI().Start();
         }
-        private void SchdeuleMenu()
+        private  async Task SchdeuleMenu()
         {
-            new ScheduleUI().Start();
+            await new ScheduleUI().Start();
         }
     }
 }

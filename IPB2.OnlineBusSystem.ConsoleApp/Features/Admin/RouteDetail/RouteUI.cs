@@ -12,9 +12,9 @@ namespace IPB2.OnlineBusSystem.ConsoleApp.Features.Admin.RouteDetail
     public class RouteUI
     {
         RouteService _routeService = new RouteService();
-        public async Task Start() // Change void to async Task
+        public async Task Start() 
         {
-            await ShowMainMenu(); // Await this call
+            await ShowMainMenu(); 
         }
         public async Task ShowMainMenu()
         {

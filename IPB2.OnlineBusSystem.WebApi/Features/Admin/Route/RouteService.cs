@@ -1,5 +1,6 @@
 ﻿using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
 using IPB2.OnlineBusSystem.WebApi.Common;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
@@ -7,13 +8,15 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Route;
 public class RouteService
 {
     AppDbContext _db = new AppDbContext();
-    public  async Task<GetRoutesResponse> GetRoutesAsync(int pageNo, int pageSize)
+
+
+    public async Task<GetRoutesResponse> GetRoutesAsync(int pageNo, int pageSize)
     {
         var routes = await _db.TblRoutes             
             .Where(x => !x.IsDelete)
             .OrderByDescending(x => x.RouteName)
-            .Skip((pageNo - 1) * pageSize)
-             .Take(pageSize)
+            //.Skip((pageNo - 1) * pageSize)
+            // .Take(pageSize)
             .Select(x => new RouteResponse
             {
                 Id = x.Id,
@@ -25,6 +28,7 @@ public class RouteService
 
         return new GetRoutesResponse { Routes = routes };
     }
+
 
     public  async Task<RouteResponse?> GetRouteByIdAsync(string id)
     {
@@ -138,7 +142,23 @@ public class RouteService
         int rowAffected = await _db.SaveChangesAsync();
 
         return rowAffected > 0
-           ? new ServiceResponse { Status = ResponseType.Success, Message = "Route updated successfully." }
+           ? new ServiceResponse { Status = ResponseType.Success, Message = "Route deleted successfully." }
            : new ServiceResponse { Status = ResponseType.None, Message = "Failed. No rows were affected." };
+    }
+
+    public async Task<List<RouteComboSetModel>> GetRouteComboSet()
+    {
+        var Bus = await _db.TblRoutes
+            .Where(x => !x.IsDelete)
+            .OrderByDescending(x => x.RouteName)
+            .Select(x => new RouteComboSetModel
+            {
+                Id = x.Id,
+                RouteName = x.RouteName,
+                Origin = x.Origin,
+                Destination = x.Destination,
+            })
+            .ToListAsync();
+        return Bus;
     }
 }
