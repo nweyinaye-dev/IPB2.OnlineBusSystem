@@ -37,7 +37,6 @@ var busApi = app.MapGroup("/api/bus").WithTags("Bus Endpoints");
 //        data = result
 //    });
 //});
-
 # endregion
 
 app.Run();
