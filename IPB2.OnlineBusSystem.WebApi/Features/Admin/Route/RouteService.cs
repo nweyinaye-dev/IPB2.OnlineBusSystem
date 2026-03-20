@@ -12,11 +12,18 @@ public class RouteService
 
     public async Task<GetRoutesResponse> GetRoutesAsync(int pageNo, int pageSize)
     {
-        var routes = await _db.TblRoutes             
-            .Where(x => !x.IsDelete)
-            .OrderByDescending(x => x.RouteName)
-            //.Skip((pageNo - 1) * pageSize)
-            // .Take(pageSize)
+        if (pageNo <= 0) pageNo = 1;
+        if (pageSize <= 0) pageSize = 10;
+
+        var query = _db.TblRoutes.Where(x => !x.IsDelete)
+                //.AsNoTracking()
+                .OrderBy(x => x.RouteName);
+
+        var totalCount = await query.CountAsync();
+
+        var routes = await query
+            .Skip((pageNo - 1) * pageSize)
+            .Take(pageSize)
             .Select(x => new RouteResponse
             {
                 Id = x.Id,
@@ -26,7 +33,13 @@ public class RouteService
             })
             .ToListAsync();
 
-        return new GetRoutesResponse { Routes = routes };
+        return new GetRoutesResponse {
+            PageNumber = pageNo,
+            PageSize = pageSize,
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+            Routes = routes 
+        };
     }
 
 

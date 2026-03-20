@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Featues\Admin\Schedule\" />
-    <Folder Include="Featues\User\" />
   </ItemGroup>
 
   <ItemGroup>

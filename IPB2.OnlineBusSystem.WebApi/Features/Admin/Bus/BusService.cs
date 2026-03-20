@@ -1,4 +1,5 @@
-﻿using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
+﻿using Azure.Core;
+using IPB2.OnlineBusSystem.DataBase.AppDbContextModels;
 using IPB2.OnlineBusSystem.WebApi.Common;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +10,19 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
         AppDbContext _db = new AppDbContext();
         public async Task<GetBusResponse> GetBusAsync(int pageNo, int pageSize)
         {
-            var Bus = await _db.TblBusDetails
-                .Where(x => !x.IsDelete)
-                .OrderByDescending(x => x.BusName)
-                //.Skip((pageNo - 1) * pageSize)
-                //.Take(pageSize)
+
+            if (pageNo <= 0) pageNo = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            var query = _db.TblBusDetails.Where(x => !x.IsDelete)
+                //.AsNoTracking()
+                .OrderBy(x => x.BusName);
+
+            var totalCount = await query.CountAsync();
+
+            var data = await query
+                .Skip((pageNo - 1) * pageSize)
+                .Take(pageSize)
                 .Select(x => new BusResponse
                 {
                     Id = x.Id,
@@ -23,10 +32,20 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
                     TotalSeat = x.TotalSeat
                 })
                 .ToListAsync();
-            return new GetBusResponse { Buss = Bus };
+
+            return new GetBusResponse
+            {
+                PageNumber = pageNo,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+                Buss = data
+            };
+
+         
         }
 
-        public async Task<GetBusResponse> GetBusesAsync(string? searchTerm)
+        public async Task<GetBusResponse> GetBusesBySearchAsync(string? searchTerm)
         {
             var query = _db.TblBusDetails
                 .Where(x => !x.IsDelete);
@@ -71,6 +90,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
         }
         public async Task<ServiceResponse> CreateAsync(UpsertBusRequest request)
         {
+          
             var Bus = new TblBusDetail
             {
                 Id = Guid.NewGuid().ToString(),

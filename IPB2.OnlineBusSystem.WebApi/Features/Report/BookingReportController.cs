@@ -13,8 +13,8 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Report
         [HttpGet]
         public async Task<IActionResult> GetSchedules()
         {
-            var response = await _reportService.GetBookingDetailAsync();
-            return Ok(response);
+            //var response = await _reportService.GetBookingDetailAsync();
+            return Ok();
         }
     }
 }

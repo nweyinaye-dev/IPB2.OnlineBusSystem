@@ -17,11 +17,17 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
        
         public async Task<GetScheduleResponse> GetScheduleAsync(int pageNo, int pageSize)
         {
-            var Schedule = await _db.TblSchedules
-                .Where(x => !x.IsDelete)
-                .OrderByDescending(x => x.Date)
-                //.Skip((pageNo - 1) * pageSize)
-                // .Take(pageSize)
+            if(pageNo <= 0 ) pageNo = 0;
+            if(pageSize <= 0  ) pageSize = 0;
+
+            var query = _db.TblSchedules.Where(x => !x.IsDelete)
+                .OrderByDescending(x => x.Date);
+
+            var totalCount = await query.CountAsync();
+
+            var Schedule = await query
+                .Skip((pageNo - 1) * pageSize)
+                 .Take(pageSize)
                 .Select(x => new ScheduleResponse
                 {
                     Id = x.Id,
@@ -36,7 +42,13 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
                 })
                 .ToListAsync();
 
-            return new GetScheduleResponse { Schedules = Schedule };
+            return new GetScheduleResponse {
+                PageNumber = pageNo,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize),
+                Schedules = Schedule 
+            };
         }
 
         public async Task<GetScheduleListResponse> GetScheduleAsync(string? searchDate)
@@ -175,7 +187,15 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
                     Status = ResponseType.NotFound,
                     Message = "Schedule not found."
                 };
-            }            
+            }
+
+            var isScheduleExist = await _db.TblSchedules.Where(x => !x.IsDelete && x.Date == request.Date
+                              && x.BusId == request.BusId).AnyAsync();
+
+            if (isScheduleExist && (request.Date != Schedule.Date
+                || request.BusId != Schedule.BusId))
+                return new ServiceResponse { Status = ResponseType.AlreadyExists, Message = $"Bus is already assigned for {Schedule.Date}." };
+
 
             if (!string.IsNullOrEmpty(request.BusId))
             {
@@ -206,12 +226,7 @@ namespace IPB2.OnlineScheduleSystem.WebApi.Features.Admin.Schedule
             if (request.Date.HasValue)
                 Schedule.Date = request.Date.Value;
 
-            var isScheduleExist = await _db.TblSchedules.Where(x => !x.IsDelete && x.Date == Schedule.Date
-                                && x.BusId == Schedule.BusId).AnyAsync();
-            if (isScheduleExist)
-                return new ServiceResponse { Status = ResponseType.AlreadyExists, Message = $"Bus is already assigned for {Schedule.Date}." };
-
-
+          
             int rowAffected = await _db.SaveChangesAsync();
 
             return rowAffected > 0

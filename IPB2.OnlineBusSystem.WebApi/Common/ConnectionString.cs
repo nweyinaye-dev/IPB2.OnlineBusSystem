@@ -10,7 +10,7 @@ namespace IPB2.OnlineBusSystem.WebApi.Common
             DataSource = ".",
             InitialCatalog = "IPB2_OnlineBusBooking",
             UserID = "sa",
-            Password = "system",
+            Password = "sasa@123",
             TrustServerCertificate = true,
         };
 

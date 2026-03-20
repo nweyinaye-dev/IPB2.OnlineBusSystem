@@ -46,6 +46,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.User
             label2 = new Label();
             label3 = new Label();
             btnBookList = new Button();
+            label1 = new Label();
             SuspendLayout();
             // 
             // cboRouteOrigin
@@ -187,11 +188,22 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.User
             btnBookList.UseVisualStyleBackColor = true;
             btnBookList.Click += btnBookList_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold | FontStyle.Italic);
+            label1.Location = new Point(34, 21);
+            label1.Name = "label1";
+            label1.Size = new Size(173, 32);
+            label1.TabIndex = 11;
+            label1.Text = "Booking Form";
+            // 
             // User
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 616);
+            Controls.Add(label1);
             Controls.Add(btnBookList);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -230,5 +242,6 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.User
         private DateTimePicker dtpTravelDate;
         private ColumnHeader BusType;
         private Button btnBookList;
+        private Label label1;
     }
 }

@@ -19,6 +19,14 @@ namespace IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus
             return Ok(response);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetBusesBySearchAsync(string str)
+        {
+            var response = await _busService.GetBusesBySearchAsync(str);
+            if (response == null) return NotFound(new ResponseBaseModel { IsSuccess = false, Message = "Bus not found." });
+            return Ok(response);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBus(string id)
         {

@@ -1,4 +1,5 @@
-﻿using IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus;
+﻿using IPB2.OnlineBusSystem.WebApi.Common;
+using IPB2.OnlineBusSystem.WebApi.Features.Admin.Bus;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,11 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             if (!int.TryParse(txtTotalSeat.Text, out int totalSeat))
             {
                 MessageBox.Show("Total Seat must be a number.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (totalSeat  < 20)
+            {
+                MessageBox.Show("Total Seat must be at leave 20 seats.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

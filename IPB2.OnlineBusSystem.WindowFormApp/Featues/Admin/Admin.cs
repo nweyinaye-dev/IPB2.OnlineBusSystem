@@ -26,13 +26,19 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         public Admin()
         {
             InitializeComponent();
+            listView1.FullRowSelect = true;
+            listView2.FullRowSelect = true;
+            listView3.FullRowSelect = true;
+            listView4.FullRowSelect = true;
         }
+
+        #region Bus Tab
         private async Task BindGrid()
         {
             listView1.View = View.Details;
 
             listView1.Items.Clear();
-            var res = await _busService.GetBusesAsync(txtBusSearchText.Text.Trim());
+            var res = await _busService.GetBusesBySearchAsync(txtBusSearchText.Text.Trim());
 
             if (res != null && res.Buss.Count > 0)
             {
@@ -51,13 +57,14 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         }
         private async void tabPage1_Enter(object sender, EventArgs e)
         {
-           await BindGrid();
+            await BindGrid();
         }
         private async void btnCreate_Click(object sender, EventArgs e)
         {
             var editForm = new BusNewForm();
             if (editForm.ShowDialog() == DialogResult.OK)
             {
+                await BindGrid();
             }
         }
         private async void btnUpdate_Click(object sender, EventArgs e)
@@ -81,6 +88,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             var editForm = new BusEditForm(bus);
             if (editForm.ShowDialog() == DialogResult.OK)
             {
+                await BindGrid();
             }
         }
         private async void btnDelete_Click(object sender, EventArgs e)
@@ -96,11 +104,13 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             if (response.Status == ResponseType.Success)
             {
                 MessageBox.Show(response.Message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await BindGrid();
             }
             else
             {
                 MessageBox.Show(response.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
         }
         private async void btnBusSearch_Click(object sender, EventArgs e)
         {
@@ -112,6 +122,8 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         private async void btnBusCancel_Click(object sender, EventArgs e)
         {
         }
+
+        #endregion
 
         #region Route Tab
 
@@ -346,7 +358,7 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
             listView4.View = View.Details;
             listView4.Items.Clear();
 
-            var res = await _bookingReportService.GetBookingDetailAsync();
+            var res = await _bookingReportService.GetBookingDetailAsync(txtBkSearch.Text.Trim());
 
             if (res != null && res.bookings.Count > 0)
             {
@@ -374,10 +386,18 @@ namespace IPB2.OnlineBusSystem.WindowFormApp.Featues.Admin
         {
             await BindBookingGrid();
         }
-
+        private async void btnBkSearch_Click(object sender, EventArgs e)
+        {
+            await BindBookingGrid();
+        }
         #endregion
 
-    
+
+        private async void btnBkCancel_Click(object sender, EventArgs e)
+        {
+            txtBkSearch.Text = string.Empty;
+            await BindBookingGrid();
+        }
     }
 }
 
